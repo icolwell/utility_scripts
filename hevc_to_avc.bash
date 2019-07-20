@@ -21,13 +21,18 @@ fi
 TEMP_DIR=$(mktemp -d)
 
 cd "$INPUT_DIR"
-for FILE in *.mkv ; do
+find * -type f -name '*.mkv' -print0 |
+while IFS= read -r -d '' FILE; do
+    # Create subfolder directories if applicable
+    mkdir -p "$( dirname "$OUTPUT_DIR/$FILE" )"
+    mkdir -p "$( dirname "$TEMP_DIR/$FILE" )"
+    
     MPG_FILE="$OUTPUT_DIR/$FILE.mpg"
     if [ -f "$MPG_FILE" ]; then
         echo "$FILE is already converted"
     else
         echo "Converting $FILE ..."
-        ffmpeg -i "$FILE" -bsf:v h264_mp4toannexb -loglevel fatal -stats -sn -map 0:0 -map 0:1 -vcodec libx264 "$TEMP_DIR/$FILE.ts"
+        ffmpeg -i "$FILE" -bsf:v h264_mp4toannexb -loglevel fatal -stats -sn -map 0:0 -map 0:1 -vcodec libx264 "$TEMP_DIR/$FILE.ts" < /dev/null
         mv "$TEMP_DIR/$FILE.ts" "$MPG_FILE"
     fi
 done
