@@ -26,7 +26,7 @@ while IFS= read -r -d '' FILE; do
     # Create subfolder directories if applicable
     mkdir -p "$( dirname "$OUTPUT_DIR/$FILE" )"
     mkdir -p "$( dirname "$TEMP_DIR/$FILE" )"
-    
+
     MPG_FILE="$OUTPUT_DIR/$FILE.mpg"
     if [ -f "$MPG_FILE" ]; then
         echo "$FILE is already converted"
